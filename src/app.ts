@@ -1,5 +1,6 @@
 const express = require("express");
 import * as bodyParser from "body-parser";
+import { Invoker } from "./common/commands/search.command";
 import { IndexPuppeteer } from "./index";
 
 let app = express();
@@ -24,18 +25,18 @@ app.all("/*", (req: any, res: any, next: any) => {
 
 app.get(`/gaming/search`, async (req: any, res: any, next: any) => {
   const { name } = req.query;
-  const index = new IndexPuppeteer();
+  const index = new IndexPuppeteer(new Invoker());
   const response = await index.calculate(name);
   res.send({ response });
 });
 app.get(`/gaming/search/initial`, async (req: any, res: any, next: any) => {
-  const index = new IndexPuppeteer();
+  const index = new IndexPuppeteer(new Invoker());
   const response = await index.getInitialResults();
   res.send({ response });
 });
 
 const http = require("http").createServer(app);
-const PORT = 3001;
+const PORT = 3002;
 http.listen(PORT, () => {
   console.log(`Running in http://localhost:${PORT}`);
 });
