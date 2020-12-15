@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,41 +54,123 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var puppeteer = require('puppeteer');
-(function () {
-    return __awaiter(this, void 0, void 0, function () {
-        var browser, page, el;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, puppeteer.launch()];
-                case 1:
-                    browser = _a.sent();
-                    return [4 /*yield*/, browser.newPage()];
-                case 2:
-                    page = _a.sent();
-                    return [4 /*yield*/, page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36')];
-                case 3:
-                    _a.sent();
-                    return [4 /*yield*/, page.setViewport({ width: 1366, height: 768 })];
-                case 4:
-                    _a.sent();
-                    return [4 /*yield*/, page.goto('https://localbitcoins.com/es/')];
-                case 5:
-                    _a.sent();
-                    return [4 /*yield*/, page.$x('//*[@id="bs-example-navbar-collapse-1"]/ul[1]/li[2]/a')];
-                case 6:
-                    el = _a.sent();
-                    return [4 /*yield*/, el[0].click()];
-                case 7:
-                    _a.sent();
-                    return [4 /*yield*/, page.screenshot({ path: 'screenshot.png', fullPage: true })];
-                case 8:
-                    _a.sent();
-                    return [4 /*yield*/, browser.close()];
-                case 9:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.IndexPuppeteer = void 0;
+var puppeteer_1 = require("./common/puppeteer");
+var admin = __importStar(require("firebase-admin"));
+var const_1 = require("./common/const");
+var serviceAccount = require("./heyapp-93526-firebase-adminsdk-8k2b8-c30462ed1a.json");
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://heyapp-93526.firebaseio.com/",
+});
+var dbFB = admin.database();
+var IndexPuppeteer = /** @class */ (function () {
+    function IndexPuppeteer(commands) {
+        this.commands = commands;
+    }
+    IndexPuppeteer.prototype.getInitialResults = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var pup, filtered, r, dbFromFB, maxRandom, i, _a, response;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        pup = new puppeteer_1.PuppeteerService();
+                        filtered = [];
+                        return [4 /*yield*/, dbFB.ref("totalProducts").once("value")];
+                    case 1:
+                        r = _b.sent();
+                        dbFromFB = r.val();
+                        maxRandom = Array(5).fill(1);
+                        maxRandom.forEach(function () {
+                            var positionRandom = Math.round(Math.random() * (dbFromFB.length - 1) + 1);
+                            console.log(positionRandom);
+                            filtered.push(dbFromFB[positionRandom]);
+                        });
+                        console.log(filtered);
+                        i = 0;
+                        _b.label = 2;
+                    case 2:
+                        if (!(i < filtered.length)) return [3 /*break*/, 5];
+                        _a = filtered[i];
+                        return [4 /*yield*/, pup.getImage(filtered[i].name)];
+                    case 3:
+                        _a.image = _b.sent();
+                        console.log("Ejecucion " + i + " de" + filtered.length, !!filtered[i].image);
+                        _b.label = 4;
+                    case 4:
+                        i++;
+                        return [3 /*break*/, 2];
+                    case 5:
+                        response = {
+                            response: filtered,
+                            sponsors: this.commands.calculateSponsors(filtered),
+                            status: !filtered.length ? 404 : 200,
+                        };
+                        return [2 /*return*/, response];
+                }
+            });
         });
-    });
-})();
+    };
+    IndexPuppeteer.prototype.calculate = function (itemToSearch) {
+        return __awaiter(this, void 0, void 0, function () {
+            var filtered, r, dbFromFB, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        filtered = [];
+                        return [4 /*yield*/, dbFB.ref("totalProducts").once("value")];
+                    case 1:
+                        r = _a.sent();
+                        dbFromFB = r.val();
+                        if (!(!dbFromFB || !dbFromFB.length)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.commands.scrapInventories()];
+                    case 2:
+                        dbFromFB = _a.sent();
+                        dbFB.ref("totalProducts").set(dbFromFB);
+                        _a.label = 3;
+                    case 3:
+                        //dbFromFB = await this.commands.getImages(dbFromFB);
+                        //dbFB.ref("totalProducts").update(dbFromFB);
+                        filtered = this.commands.filterByName(dbFromFB, itemToSearch);
+                        response = {
+                            response: filtered,
+                            sponsors: this.commands.calculateSponsors(filtered),
+                            status: !filtered.length ? 404 : 200,
+                        };
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    IndexPuppeteer.prototype.getCategories = function () {
+        return {
+            data: {
+                categories: const_1.CATEGORIES.map(function (item) { return item.categoryName; }),
+            },
+            status: !const_1.CATEGORIES.length ? 404 : 200,
+        };
+    };
+    IndexPuppeteer.prototype.getProductByCategory = function (category) {
+        return __awaiter(this, void 0, void 0, function () {
+            var r, dbFromFB, data, sponsors;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, dbFB.ref("totalProducts").once("value")];
+                    case 1:
+                        r = _a.sent();
+                        dbFromFB = r.val();
+                        data = dbFromFB.filter(function (item) { var _a; return ((_a = item.category) === null || _a === void 0 ? void 0 : _a.toUpperCase()) === category.toUpperCase(); });
+                        sponsors = this.commands.calculateSponsors(data);
+                        return [2 /*return*/, {
+                                data: data,
+                                sponsors: sponsors,
+                                status: !data.length ? 404 : 200,
+                            }];
+                }
+            });
+        });
+    };
+    return IndexPuppeteer;
+}());
+exports.IndexPuppeteer = IndexPuppeteer;
