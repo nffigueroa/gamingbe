@@ -8,139 +8,69 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GamerColombia = void 0;
-var puppeteer_1 = __importDefault(require("puppeteer"));
-var GamerColombia = /** @class */ (function () {
-    function GamerColombia() {
+const puppeteer_1 = __importDefault(require("puppeteer"));
+class GamerColombia {
+    constructor() {
         this.URL = "https://gamerscolombia.com/tienda?order=1&paginate=48&page=1&export=0&minPrice=30000&maxPrice=9999999";
         this.COMPANY_NAME = "gamercolombia";
     }
-    GamerColombia.prototype.getTable = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.connect(this.URL, "#formFilterProduct > div > div.container.padding-top-1x.padding-bottom-3x > div > div.col-lg-9.order-lg-2 > div.isotope-grid.cols-3")];
-                    case 1:
-                        response = _a.sent();
-                        return [2 /*return*/, response];
-                }
-            });
+    getTable() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.connect(this.URL, "#formFilterProduct > div > div.container.padding-top-1x.padding-bottom-3x > div > div.col-lg-9.order-lg-2 > div.isotope-grid.cols-3");
+            return response;
         });
-    };
-    GamerColombia.prototype.connect = function (url, tableTarget) {
-        return __awaiter(this, void 0, void 0, function () {
-            var browser, wait, page, pageCount, fullResult, i, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, puppeteer_1.default.launch()];
-                    case 1:
-                        browser = _a.sent();
-                        wait = function (ms) {
-                            return new Promise(function (resolve) { return setTimeout(resolve, ms); });
-                        };
-                        return [4 /*yield*/, browser.newPage()];
-                    case 2:
-                        page = _a.sent();
-                        return [4 /*yield*/, page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36")];
-                    case 3:
-                        _a.sent();
-                        return [4 /*yield*/, page.goto(url, { waitUntil: "domcontentloaded" })];
-                    case 4:
-                        _a.sent();
-                        return [4 /*yield*/, page.setViewport({ width: 1366, height: 768 })];
-                    case 5:
-                        _a.sent();
-                        return [4 /*yield*/, page.evaluate(function () {
-                                var _a;
-                                return (_a = document.querySelector("#formFilterProduct > div > div.container.padding-top-1x.padding-bottom-3x > div > div.col-lg-9.order-lg-2 > nav > div > div > ul")) === null || _a === void 0 ? void 0 : _a.children.length;
-                            })];
-                    case 6:
-                        pageCount = _a.sent();
-                        fullResult = [];
-                        i = 1;
-                        _a.label = 7;
-                    case 7:
-                        if (!(i < pageCount)) return [3 /*break*/, 13];
-                        return [4 /*yield*/, page.click("#formFilterProduct > div > div.container.padding-top-1x.padding-bottom-3x > div > div.col-lg-9.order-lg-2 > nav > div > div > ul > li:nth-child(" + i + ")")];
-                    case 8:
-                        _a.sent();
-                        return [4 /*yield*/, page.waitForSelector(tableTarget)];
-                    case 9:
-                        _a.sent();
-                        return [4 /*yield*/, page.screenshot({ path: "screenshot.png", fullPage: true })];
-                    case 10:
-                        _a.sent();
-                        return [4 /*yield*/, page.evaluate(function (table, company) {
-                                var _a;
-                                var result = [];
-                                var rows = (_a = document
-                                    .querySelector(table)) === null || _a === void 0 ? void 0 : _a.querySelectorAll('div[class="grid-item"]');
-                                for (var j = 0; j < rows.length; j++) {
-                                    var _b = rows[j]
-                                        .querySelector('h3[class="product-title"]')
-                                        .getElementsByTagName("a")[0], name_1 = _b.innerText, url_1 = _b.href;
-                                    var value = Number(rows[j]
-                                        .querySelector('h4[class="product-price"]')
-                                        .getElementsByTagName("span")[0]
-                                        .innerText.replace("$", "")
-                                        .replace(/,/g, "")
-                                        .replace(/\n/g, ""));
-                                    result.push({
-                                        name: name_1,
-                                        value: value,
-                                        url: url_1,
-                                        seller: { name: "Gamers Colombia", key: company },
-                                    });
-                                }
-                                return result;
-                            }, tableTarget, this.COMPANY_NAME)];
-                    case 11:
-                        data = _a.sent();
-                        fullResult = fullResult.concat(data);
-                        _a.label = 12;
-                    case 12:
-                        i++;
-                        return [3 /*break*/, 7];
-                    case 13: return [4 /*yield*/, browser.close()];
-                    case 14:
-                        _a.sent();
-                        return [2 /*return*/, fullResult];
-                }
+    }
+    connect(url, tableTarget) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const browser = yield puppeteer_1.default.launch();
+            const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+            const page = yield browser.newPage();
+            yield page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36");
+            yield page.goto(url, { waitUntil: "domcontentloaded" });
+            yield page.setViewport({ width: 1366, height: 768 });
+            const pageCount = yield page.evaluate(() => {
+                var _a;
+                return (_a = document.querySelector("#formFilterProduct > div > div.container.padding-top-1x.padding-bottom-3x > div > div.col-lg-9.order-lg-2 > nav > div > div > ul")) === null || _a === void 0 ? void 0 : _a.children.length;
             });
+            let fullResult = [];
+            for (let i = 1; i < pageCount; i++) {
+                yield page.click(`#formFilterProduct > div > div.container.padding-top-1x.padding-bottom-3x > div > div.col-lg-9.order-lg-2 > nav > div > div > ul > li:nth-child(${i})`);
+                yield page.waitForSelector(tableTarget);
+                yield page.screenshot({ path: "screenshot.png", fullPage: true });
+                const data = yield page.evaluate((table, company) => {
+                    var _a;
+                    let result = [];
+                    const rows = (_a = document
+                        .querySelector(table)) === null || _a === void 0 ? void 0 : _a.querySelectorAll('div[class="grid-item"]');
+                    for (let j = 0; j < rows.length; j++) {
+                        const { innerText: name, href: url } = rows[j]
+                            .querySelector('h3[class="product-title"]')
+                            .getElementsByTagName("a")[0];
+                        const value = Number(rows[j]
+                            .querySelector('h4[class="product-price"]')
+                            .getElementsByTagName("span")[0]
+                            .innerText.replace("$", "")
+                            .replace(/,/g, "")
+                            .replace(/\n/g, ""));
+                        result.push({
+                            name,
+                            value,
+                            url,
+                            seller: { name: "Gamers Colombia", key: company },
+                        });
+                    }
+                    return result;
+                }, tableTarget, this.COMPANY_NAME);
+                fullResult = fullResult.concat(data);
+            }
+            yield browser.close();
+            return fullResult;
         });
-    };
-    return GamerColombia;
-}());
+    }
+}
 exports.GamerColombia = GamerColombia;

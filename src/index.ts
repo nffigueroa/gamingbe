@@ -1,13 +1,8 @@
-import { ImagenWorld } from "./classes/ImagenWorld";
-import { SpeedLogic } from "./classes/SpeedLogic";
-import { Tauret } from "./classes/Tauret";
 import { PuppeteerService } from "./common/puppeteer";
 import { ItemProduct, Seller } from "./interfaces/ItemProduct";
 
 import * as admin from "firebase-admin";
 import { ResponseSearch } from "./interfaces/Responses";
-import { ClonesYPerifericos } from "./classes/ClonesYPerifericos";
-import { GamerColombia } from "./classes/GamersColombia";
 import { ICommand } from "./interfaces/Command";
 import { CATEGORIES } from "./common/const";
 var serviceAccount = require("./heyapp-93526-firebase-adminsdk-8k2b8-c30462ed1a.json");

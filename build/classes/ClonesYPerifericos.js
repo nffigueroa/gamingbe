@@ -8,125 +8,60 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClonesYPerifericos = void 0;
-var puppeteer_1 = __importDefault(require("puppeteer"));
-var ClonesYPerifericos = /** @class */ (function () {
-    function ClonesYPerifericos() {
+const puppeteer_1 = __importDefault(require("puppeteer"));
+class ClonesYPerifericos {
+    constructor() {
         this.URL = "https://clonesyperifericos.com/tienda/";
         this.COMPANY_NAME = "clonesyperifericos";
     }
-    ClonesYPerifericos.prototype.getTable = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.connect(this.URL, "body > div.template-container > div.template-content > div.page-wrapper > div.container.sidebar-mobile-bottom.content-page.products-hover-only-icons > div > div > div.content.main-products-loop.col-md-9.col-md-push-3 > div.row.products-loop.products-grid.row-count-4", "")];
-                    case 1:
-                        response = _a.sent();
-                        return [2 /*return*/, response];
-                }
-            });
+    getTable() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.connect(this.URL, "body > div.template-container > div.template-content > div.page-wrapper > div.container.sidebar-mobile-bottom.content-page.products-hover-only-icons > div > div > div.content.main-products-loop.col-md-9.col-md-push-3 > div.row.products-loop.products-grid.row-count-4", "");
+            return response;
         });
-    };
-    ClonesYPerifericos.prototype.connect = function (url, tableTarget, tr) {
-        return __awaiter(this, void 0, void 0, function () {
-            var elementToDissapear, browser, page, wait, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        elementToDissapear = "body > div.template-container > div.template-content > div.page-wrapper > div.container.sidebar-mobile-bottom.content-page.products-hover-only-icons > div > div > div.content.main-products-loop.col-md-9.col-md-push-3 > div.after-shop-loop > nav > ul > li:nth-child(1) > span";
-                        return [4 /*yield*/, puppeteer_1.default.launch()];
-                    case 1:
-                        browser = _a.sent();
-                        return [4 /*yield*/, browser.newPage()];
-                    case 2:
-                        page = _a.sent();
-                        return [4 /*yield*/, page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36")];
-                    case 3:
-                        _a.sent();
-                        return [4 /*yield*/, page.goto(url, { waitUntil: "domcontentloaded" })];
-                    case 4:
-                        _a.sent();
-                        return [4 /*yield*/, page.setViewport({ width: 1366, height: 768 })];
-                    case 5:
-                        _a.sent();
-                        return [4 /*yield*/, page.select("body > div.template-container > div.template-content > div.page-wrapper > div.container.sidebar-mobile-bottom.content-page.products-hover-only-icons > div > div > div.content.main-products-loop.col-md-9.col-md-push-3 > div.filter-wrap > div > div.products-per-page.et-hidden-phone > form > select", "-1")];
-                    case 6:
-                        _a.sent();
-                        return [4 /*yield*/, page.$eval("body > div.template-container > div.template-content > div.page-wrapper > div.container.sidebar-mobile-bottom.content-page.products-hover-only-icons > div > div > div.content.main-products-loop.col-md-9.col-md-push-3 > div.filter-wrap > div > div.products-per-page.et-hidden-phone > form", function (form) { return form.submit(); })];
-                    case 7:
-                        _a.sent();
-                        return [4 /*yield*/, page.waitForSelector(elementToDissapear, { hidden: true })];
-                    case 8:
-                        _a.sent();
-                        wait = function (ms) {
-                            return new Promise(function (resolve) { return setTimeout(resolve, ms); });
-                        };
-                        return [4 /*yield*/, wait(2000)];
-                    case 9:
-                        _a.sent();
-                        return [4 /*yield*/, page.evaluate(function (table, company) {
-                                var _a;
-                                var rows = (_a = document.querySelector(table)) === null || _a === void 0 ? void 0 : _a.children;
-                                var result = [];
-                                for (var i = 0; i < rows.length; i++) {
-                                    var _b = rows[i]
-                                        .querySelector('p[class="product-title"]')
-                                        .querySelector("a"), name_1 = _b.innerText, url_1 = _b.href;
-                                    var value = rows[i]
-                                        .getElementsByTagName("span")[0]
-                                        .innerText.replace("$", "")
-                                        .replace(/,/g, "");
-                                    result.push({
-                                        name: name_1,
-                                        url: url_1,
-                                        value: value,
-                                        seller: { name: "Clones y Perifericos", key: company },
-                                    });
-                                }
-                                return result;
-                            }, tableTarget, this.COMPANY_NAME)];
-                    case 10:
-                        data = _a.sent();
-                        return [4 /*yield*/, browser.close()];
-                    case 11:
-                        _a.sent();
-                        return [2 /*return*/, data];
+    }
+    connect(url, tableTarget, tr) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const elementToDissapear = "body > div.template-container > div.template-content > div.page-wrapper > div.container.sidebar-mobile-bottom.content-page.products-hover-only-icons > div > div > div.content.main-products-loop.col-md-9.col-md-push-3 > div.after-shop-loop > nav > ul > li:nth-child(1) > span";
+            const browser = yield puppeteer_1.default.launch();
+            const page = yield browser.newPage();
+            yield page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36");
+            yield page.goto(url, { waitUntil: "domcontentloaded" });
+            yield page.setViewport({ width: 1366, height: 768 });
+            yield page.select("body > div.template-container > div.template-content > div.page-wrapper > div.container.sidebar-mobile-bottom.content-page.products-hover-only-icons > div > div > div.content.main-products-loop.col-md-9.col-md-push-3 > div.filter-wrap > div > div.products-per-page.et-hidden-phone > form > select", "-1");
+            yield page.$eval("body > div.template-container > div.template-content > div.page-wrapper > div.container.sidebar-mobile-bottom.content-page.products-hover-only-icons > div > div > div.content.main-products-loop.col-md-9.col-md-push-3 > div.filter-wrap > div > div.products-per-page.et-hidden-phone > form", (form) => form.submit());
+            yield page.waitForSelector(elementToDissapear, { hidden: true });
+            const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+            yield wait(2000);
+            const data = yield page.evaluate((table, company) => {
+                var _a;
+                const rows = (_a = document.querySelector(table)) === null || _a === void 0 ? void 0 : _a.children;
+                const result = [];
+                for (let i = 0; i < rows.length; i++) {
+                    const { innerText: name, href: url } = rows[i]
+                        .querySelector('p[class="product-title"]')
+                        .querySelector("a");
+                    const value = rows[i]
+                        .getElementsByTagName("span")[0]
+                        .innerText.replace("$", "")
+                        .replace(/,/g, "");
+                    result.push({
+                        name,
+                        url,
+                        value,
+                        seller: { name: "Clones y Perifericos", key: company },
+                    });
                 }
-            });
+                return result;
+            }, tableTarget, this.COMPANY_NAME);
+            yield browser.close();
+            return data;
         });
-    };
-    return ClonesYPerifericos;
-}());
+    }
+}
 exports.ClonesYPerifericos = ClonesYPerifericos;
