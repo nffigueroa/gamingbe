@@ -47,7 +47,7 @@ app.get(`/gaming/search/category`, async (req: any, res: any, next: any) => {
 });
 
 const http = require("http").createServer(app);
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 http.listen(PORT, () => {
   console.log(`Running in http://localhost:${PORT}`);
 });
