@@ -9,6 +9,7 @@ import { ResponseSearch } from "./interfaces/Responses";
 import { ClonesYPerifericos } from "./classes/ClonesYPerifericos";
 import { GamerColombia } from "./classes/GamersColombia";
 import { ICommand } from "./interfaces/Command";
+import { CATEGORIES } from "./common/const";
 var serviceAccount = require("./heyapp-93526-firebase-adminsdk-8k2b8-c30462ed1a.json");
 
 admin.initializeApp({
@@ -62,16 +63,47 @@ export class IndexPuppeteer {
       dbFromFB = await this.commands.scrapInventories();
       dbFB.ref("totalProducts").set(dbFromFB);
     }
-    dbFromFB = await this.commands.getImages(dbFromFB);
-    dbFB.ref("totalProducts").update(dbFromFB);
+    //dbFromFB = await this.commands.getImages(dbFromFB);
+    //dbFB.ref("totalProducts").update(dbFromFB);
     filtered = this.commands.filterByName(dbFromFB, itemToSearch);
-    //filtered = await this.getImages(filtered);
-    //dbFB.ref("totalProducts").set(dbFromFB);
+    /*filtered = dbFromFB.map((item: ItemProduct) => ({
+      ...item,
+      category:
+        Number(item.value) > 0 && item.name
+          ? this.commands.getCategoryByName(item.name)
+          : "",
+    }));*/
+    //dbFB.ref("totalProducts").update(filtered);
     const response: ResponseSearch = {
       response: filtered,
       sponsors: this.commands.calculateSponsors(filtered),
       status: !filtered.length ? 404 : 200,
     };
     return response;
+  }
+
+  getCategories() {
+    return {
+      data: {
+        categories: CATEGORIES.map((item: any) => item.categoryName),
+      },
+      status: !CATEGORIES.length ? 404 : 200,
+    };
+  }
+
+  async getProductByCategory(category: string) {
+    const r = await dbFB.ref("totalProducts").once("value");
+    let dbFromFB: Array<any> = r.val();
+
+    const data = dbFromFB.filter(
+      (item: ItemProduct) =>
+        item.category?.toUpperCase() === category.toUpperCase()
+    );
+    const sponsors = this.commands.calculateSponsors(data);
+    return {
+      data,
+      sponsors,
+      status: !data.length ? 404 : 200,
+    };
   }
 }

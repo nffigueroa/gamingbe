@@ -111,12 +111,12 @@ var GamerColombia = /** @class */ (function () {
                                     var _b = rows[j]
                                         .querySelector('h3[class="product-title"]')
                                         .getElementsByTagName("a")[0], name_1 = _b.innerText, url_1 = _b.href;
-                                    var value = rows[j]
+                                    var value = Number(rows[j]
                                         .querySelector('h4[class="product-price"]')
                                         .getElementsByTagName("span")[0]
                                         .innerText.replace("$", "")
                                         .replace(/,/g, "")
-                                        .replace(/n/g, "");
+                                        .replace(/\n/g, ""));
                                     result.push({
                                         name: name_1,
                                         value: value,
@@ -128,7 +128,7 @@ var GamerColombia = /** @class */ (function () {
                             }, tableTarget, this.COMPANY_NAME)];
                     case 11:
                         data = _a.sent();
-                        fullResult.push(data);
+                        fullResult = fullResult.concat(data);
                         _a.label = 12;
                     case 12:
                         i++;

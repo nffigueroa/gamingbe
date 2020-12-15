@@ -34,7 +34,13 @@ export class ImagenWorld implements IProducts {
           ?.querySelectorAll('[role="row"]');
         let result = [];
         for (let i = 0; i < rows.length; i++) {
-          const name = rows[i].querySelectorAll("td")[0].innerText;
+          let name;
+          if (rows[i].querySelectorAll("td").length > 2) {
+            name = rows[i].querySelectorAll("td")[1].innerText;
+          } else {
+            name = rows[i].querySelectorAll("td")[0].innerText;
+          }
+
           const value = Number(
             rows[i]
               .querySelectorAll("td")[2]

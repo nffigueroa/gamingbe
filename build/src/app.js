@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -57,6 +68,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var bodyParser = __importStar(require("body-parser"));
+var search_command_1 = require("./commands/search.command");
 var index_1 = require("./index");
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -79,7 +91,7 @@ app.get("/gaming/search", function (req, res, next) { return __awaiter(void 0, v
         switch (_a.label) {
             case 0:
                 name = req.query.name;
-                index = new index_1.IndexPuppeteer();
+                index = new index_1.IndexPuppeteer(new search_command_1.Invoker());
                 return [4 /*yield*/, index.calculate(name)];
             case 1:
                 response = _a.sent();
@@ -93,11 +105,31 @@ app.get("/gaming/search/initial", function (req, res, next) { return __awaiter(v
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                index = new index_1.IndexPuppeteer();
+                index = new index_1.IndexPuppeteer(new search_command_1.Invoker());
                 return [4 /*yield*/, index.getInitialResults()];
             case 1:
                 response = _a.sent();
                 res.send({ response: response });
+                return [2 /*return*/];
+        }
+    });
+}); });
+app.get("/gaming/category/list", function (req, res, next) {
+    var index = new index_1.IndexPuppeteer(new search_command_1.Invoker());
+    var response = index.getCategories();
+    res.send({ response: response });
+});
+app.get("/gaming/search/category", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var categoryName, index, response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                categoryName = req.query.categoryName;
+                index = new index_1.IndexPuppeteer(new search_command_1.Invoker());
+                return [4 /*yield*/, index.getProductByCategory(categoryName)];
+            case 1:
+                response = _a.sent();
+                res.send(__assign({}, response));
                 return [2 /*return*/];
         }
     });

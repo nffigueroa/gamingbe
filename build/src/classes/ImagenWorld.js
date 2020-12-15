@@ -88,7 +88,13 @@ var ImagenWorld = /** @class */ (function () {
                                     .querySelector(table)) === null || _a === void 0 ? void 0 : _a.querySelectorAll('[role="row"]');
                                 var result = [];
                                 for (var i = 0; i < rows.length; i++) {
-                                    var name_1 = rows[i].querySelectorAll("td")[0].innerText;
+                                    var name_1 = void 0;
+                                    if (rows[i].querySelectorAll("td").length > 2) {
+                                        name_1 = rows[i].querySelectorAll("td")[1].innerText;
+                                    }
+                                    else {
+                                        name_1 = rows[i].querySelectorAll("td")[0].innerText;
+                                    }
                                     var value = Number(rows[i]
                                         .querySelectorAll("td")[2]
                                         .innerText.replace("$", "")

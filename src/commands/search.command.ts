@@ -1,18 +1,22 @@
-import { ClonesYPerifericos } from "../../classes/ClonesYPerifericos";
-import { GamerColombia } from "../../classes/GamersColombia";
-import { ImagenWorld } from "../../classes/ImagenWorld";
-import { SpeedLogic } from "../../classes/SpeedLogic";
-import { Tauret } from "../../classes/Tauret";
-import { ICommand } from "../../interfaces/Command";
-import { ItemProduct, Seller } from "../../interfaces/ItemProduct";
-import { PuppeteerService } from "../puppeteer";
+import { ClonesYPerifericos } from "../classes/ClonesYPerifericos";
+import { GamerColombia } from "../classes/GamersColombia";
+import { ImagenWorld } from "../classes/ImagenWorld";
+import { SpeedLogic } from "../classes/SpeedLogic";
+import { Tauret } from "../classes/Tauret";
+import { ICommand } from "../interfaces/Command";
+import { ItemProduct, Seller } from "../interfaces/ItemProduct";
+import { PuppeteerService } from "../common/puppeteer";
+import { CATEGORIES } from "../common/const";
 
 export class Invoker implements ICommand {
   async getImages(arr: Array<ItemProduct>): Promise<Array<ItemProduct>> {
     const pup = new PuppeteerService();
     for (let i = 0; i < arr.length; i++) {
+      if (!arr[i].name) {
+        console.log("Ejecucion " + i + " de " + arr.length, !!arr[i].image);
+        continue;
+      }
       arr[i].image = arr[i].image || (await pup.getImage(arr[i].name));
-
       console.log("Ejecucion " + i + " de " + arr.length, !!arr[i].image);
     }
     return arr;
@@ -55,5 +59,22 @@ export class Invoker implements ICommand {
         item.name &&
         item.name.toUpperCase().includes(itemToSearch.toUpperCase())
     );
+  }
+
+  getCategoryByName(name: string): string {
+    console.log(name + "111");
+    const r = CATEGORIES.filter(
+      ({ keys }) =>
+        !!keys.filter((key: string) =>
+          name.trim().toUpperCase().includes(key.toUpperCase())
+        ).length
+    )[0].categoryName;
+    console.log(r);
+    return CATEGORIES.filter(
+      ({ keys }) =>
+        !!keys.filter((key: string) =>
+          name.trim().toUpperCase().includes(key.toUpperCase())
+        ).length
+    )[0].categoryName;
   }
 }

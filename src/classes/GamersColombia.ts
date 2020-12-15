@@ -54,12 +54,14 @@ export class GamerColombia implements IProducts {
             const { innerText: name, href: url } = rows[j]
               .querySelector('h3[class="product-title"]')
               .getElementsByTagName("a")[0];
-            const value = rows[j]
-              .querySelector('h4[class="product-price"]')
-              .getElementsByTagName("span")[0]
-              .innerText.replace("$", "")
-              .replace(/,/g, "")
-              .replace(/n/g, "");
+            const value = Number(
+              rows[j]
+                .querySelector('h4[class="product-price"]')
+                .getElementsByTagName("span")[0]
+                .innerText.replace("$", "")
+                .replace(/,/g, "")
+                .replace(/\n/g, "")
+            );
 
             result.push({
               name,

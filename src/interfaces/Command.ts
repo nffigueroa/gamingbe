@@ -8,4 +8,5 @@ export interface ICommand {
     db: Array<ItemProduct>,
     itemToSearch: string
   ): Array<ItemProduct>;
+  getCategoryByName(name: string): string;
 }

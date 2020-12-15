@@ -46,41 +46,37 @@ var PuppeteerService = /** @class */ (function () {
     }
     PuppeteerService.prototype.getImage = function (name) {
         return __awaiter(this, void 0, void 0, function () {
-            var firstImage, browser, wait, page, data, error_1;
+            var firstImage, browser, page, data, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 12, , 13]);
+                        _a.trys.push([0, 11, , 12]);
                         firstImage = "#i9 > div.FAZ4xe.oQYlMd > span > div > div.Q2tIyd > div:nth-child(1) > c-wiz > div > a > div > div.T6b9se.eKtPwd > img";
                         return [4 /*yield*/, puppeteer_1.default.launch()];
                     case 1:
                         browser = _a.sent();
-                        wait = function (ms) {
-                            return new Promise(function (resolve) { return setTimeout(resolve, ms); });
-                        };
                         return [4 /*yield*/, browser.newPage()];
                     case 2:
                         page = _a.sent();
                         return [4 /*yield*/, page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36")];
                     case 3:
                         _a.sent();
-                        return [4 /*yield*/, page.setViewport({ width: 1366, height: 768 })];
-                    case 4:
-                        _a.sent();
+                        //await page.setViewport({ width: 1366, height: 768 });
                         return [4 /*yield*/, page.goto("https://www.google.com/imghp?hl=EN")];
-                    case 5:
+                    case 4:
+                        //await page.setViewport({ width: 1366, height: 768 });
                         _a.sent();
                         return [4 /*yield*/, page.focus('input[name="q"]')];
-                    case 6:
+                    case 5:
                         _a.sent();
                         return [4 /*yield*/, page.keyboard.type(name)];
-                    case 7:
+                    case 6:
                         _a.sent();
                         return [4 /*yield*/, page.keyboard.press("Enter")];
-                    case 8:
+                    case 7:
                         _a.sent();
                         return [4 /*yield*/, page.waitForSelector("#yDmH0d > div.T1diZc.KWE8qe > c-wiz > c-wiz > div > div > div > div.bMoG0d")];
-                    case 9:
+                    case 8:
                         _a.sent();
                         return [4 /*yield*/, page.evaluate(function (firstImg) {
                                 var _a;
@@ -88,16 +84,16 @@ var PuppeteerService = /** @class */ (function () {
                                     .querySelector("#yDmH0d > div.T1diZc.KWE8qe > c-wiz > c-wiz > div > div > div > div.bMoG0d")) === null || _a === void 0 ? void 0 : _a.querySelectorAll("img")[0].src;
                                 return imgBase;
                             }, firstImage)];
-                    case 10:
+                    case 9:
                         data = _a.sent();
                         return [4 /*yield*/, browser.close()];
-                    case 11:
+                    case 10:
                         _a.sent();
                         return [2 /*return*/, data];
-                    case 12:
+                    case 11:
                         error_1 = _a.sent();
-                        return [2 /*return*/, ''];
-                    case 13: return [2 /*return*/];
+                        return [2 /*return*/, ""];
+                    case 12: return [2 /*return*/];
                 }
             });
         });
