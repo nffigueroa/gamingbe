@@ -58,8 +58,8 @@ export class IndexPuppeteer {
       dbFromFB = await this.commands.scrapInventories();
       dbFB.ref("totalProducts").set(dbFromFB);
     }
-    //dbFromFB = await this.commands.getImages(dbFromFB);
-    //dbFB.ref("totalProducts").update(dbFromFB);
+    dbFromFB = await this.commands.getImages(dbFromFB);
+    dbFB.ref("totalProducts").update(dbFromFB);
     filtered = this.commands.filterByName(dbFromFB, itemToSearch);
     /*filtered = dbFromFB.map((item: ItemProduct) => ({
       ...item,

@@ -22,20 +22,21 @@ export class PuppeteerService {
       await page.keyboard.press("Enter");
 
       await page.waitForSelector(
-        "#yDmH0d > div.T1diZc.KWE8qe > c-wiz > c-wiz > div > div > div > div.bMoG0d"
+        "#islrg > div.islrc > div:nth-child(1) > a.wXeWr.islib.nfEiy.mM5pbd > div.bRMDJf.islir > img"
       );
       const data = await page.evaluate((firstImg: string) => {
-        const imgBase: any = document
-          .querySelector(
-            "#yDmH0d > div.T1diZc.KWE8qe > c-wiz > c-wiz > div > div > div > div.bMoG0d"
+        const imgBase: any = (<HTMLImageElement>(
+          document.querySelector(
+            "#islrg > div.islrc > div:nth-child(1) > a.wXeWr.islib.nfEiy.mM5pbd > div.bRMDJf.islir > img"
           )
-          ?.querySelectorAll("img")[0].src;
+        ))?.src;
         return imgBase;
       }, firstImage);
 
       await browser.close();
       return data;
     } catch (error) {
+      console.log(error);
       return "";
     }
   }
