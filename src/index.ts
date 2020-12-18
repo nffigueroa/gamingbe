@@ -22,6 +22,9 @@ export class IndexPuppeteer {
     let filtered: ItemProduct[] = [];
     const r = await dbFB.ref("totalProducts").once("value");
     let dbFromFB: Array<any> = r.val();
+    dbFromFB = dbFromFB.filter(
+      (item: ItemProduct) => !!item.name && !!item.value
+    );
     const maxRandom = Array(20).fill(1);
     maxRandom.forEach(() => {
       const positionRandom = Math.round(
@@ -30,7 +33,7 @@ export class IndexPuppeteer {
       console.log(positionRandom);
       filtered.push(dbFromFB[positionRandom]);
     });
-    filtered = await this.commands.getImages(filtered);
+    //filtered = await this.commands.getImages(filtered);
 
     const response: ResponseSearch = {
       response: filtered,
@@ -50,8 +53,11 @@ export class IndexPuppeteer {
       dbFromFB = await this.commands.scrapInventories();
       dbFB.ref("totalProducts").set(dbFromFB);
     }
-    dbFromFB = await this.commands.getImages(dbFromFB);
-    dbFB.ref("totalProducts").update(dbFromFB);
+    dbFromFB = dbFromFB.filter(
+      (item: ItemProduct) => !!item.name && !!item.value
+    );
+    //dbFromFB = await this.commands.getImages(dbFromFB);
+    //dbFB.ref("totalProducts").update(dbFromFB);
     filtered = this.commands.filterByName(dbFromFB, itemToSearch);
     /*filtered = dbFromFB.map((item: ItemProduct) => ({
       ...item,
@@ -81,11 +87,14 @@ export class IndexPuppeteer {
   async getProductByCategory(category: string) {
     const r = await dbFB.ref("totalProducts").once("value");
     let dbFromFB: Array<any> = r.val();
-
+    dbFromFB = dbFromFB.filter(
+      (item: ItemProduct) => !!item.name && !!item.value
+    );
     const data = dbFromFB.filter(
       (item: ItemProduct) =>
         item.category?.toUpperCase() === category.toUpperCase()
     );
+
     const sponsors = this.commands.calculateSponsors(data);
     return {
       data,
