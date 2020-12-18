@@ -22,7 +22,7 @@ export class IndexPuppeteer {
     let filtered: ItemProduct[] = [];
     const r = await dbFB.ref("totalProducts").once("value");
     let dbFromFB: Array<any> = r.val();
-    const maxRandom = Array(5).fill(1);
+    const maxRandom = Array(20).fill(1);
     maxRandom.forEach(() => {
       const positionRandom = Math.round(
         Math.random() * (dbFromFB.length - 1) + 1
