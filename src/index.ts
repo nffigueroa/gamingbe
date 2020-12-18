@@ -30,15 +30,7 @@ export class IndexPuppeteer {
       console.log(positionRandom);
       filtered.push(dbFromFB[positionRandom]);
     });
-    console.log(filtered);
-    for (let i = 0; i < filtered.length; i++) {
-      filtered[i].image = await pup.getImage(filtered[i].name);
-
-      console.log(
-        "Ejecucion " + i + " de" + filtered.length,
-        !!filtered[i].image
-      );
-    }
+    filtered = await this.commands.getImages(filtered);
 
     const response: ResponseSearch = {
       response: filtered,
