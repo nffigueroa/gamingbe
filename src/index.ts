@@ -18,6 +18,7 @@ export class IndexPuppeteer {
   constructor(private commands: ICommand, private mongoDb: IMongoDB) {}
 
   async getInitialResults(): Promise<ResponseSearch> {
+    await this.mongoDb.connect();
     let filtered: ItemProduct[] = [];
     let dbFromFB: Array<any> = await inventorySchema.collection
       .find({})
@@ -109,6 +110,7 @@ export class IndexPuppeteer {
   }
 
   async getProductByCategory(category: string) {
+    await this.mongoDb.connect();
     let dbFromFB: Array<any> = await inventorySchema.collection
       .find({})
       .toArray();
