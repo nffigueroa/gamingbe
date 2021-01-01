@@ -3,25 +3,25 @@ import { ItemProduct, Seller } from "./interfaces/ItemProduct";
 
 import * as admin from "firebase-admin";
 import { ResponseSearch } from "./interfaces/Responses";
+import { IMongoDB } from "./interfaces/Mongo";
 import { ICommand } from "./interfaces/Command";
 import { CATEGORIES } from "./common/const";
-var serviceAccount = require("./heyapp-93526-firebase-adminsdk-8k2b8-c30462ed1a.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://heyapp-93526.firebaseio.com/",
-});
-
-const dbFB = admin.database();
+import { TiendaGamerMedellin } from "./classes/TiendaGamerMedellin";
+import { SpeedLogic } from "./classes/SpeedLogic";
+import { Tauret } from "./classes/Tauret";
+import { ImagenWorld } from "./classes/ImagenWorld";
+import { GamerColombia } from "./classes/GamersColombia";
+import { ClonesYPerifericos } from "./classes/ClonesYPerifericos";
+import { inventorySchema } from "./db/schemas/Inventory";
 
 export class IndexPuppeteer {
-  constructor(private commands: ICommand) {}
+  constructor(private commands: ICommand, private mongoDb: IMongoDB) {}
 
   async getInitialResults(): Promise<ResponseSearch> {
-    const pup = new PuppeteerService();
     let filtered: ItemProduct[] = [];
-    const r = await dbFB.ref("totalProducts").once("value");
-    let dbFromFB: Array<any> = r.val();
+    let dbFromFB: Array<any> = await inventorySchema.collection
+      .find({})
+      .toArray();
     dbFromFB = dbFromFB.filter(
       (item: ItemProduct) => !!item.name && !!item.value
     );
@@ -33,7 +33,7 @@ export class IndexPuppeteer {
       console.log(positionRandom);
       filtered.push(dbFromFB[positionRandom]);
     });
-    //filtered = await this.commands.getImages(filtered);
+    filtered = await this.commands.getImages(filtered);
 
     const response: ResponseSearch = {
       response: filtered,
@@ -44,14 +44,26 @@ export class IndexPuppeteer {
   }
 
   async calculate(itemToSearch: string): Promise<ResponseSearch> {
+    await this.mongoDb.connect();
     let filtered = [];
-    const r = await dbFB.ref("totalProducts").once("value");
+    //const r = await dbFB.ref("totalProducts").once("value");
     //let dbFromFB: Array<any> = []; // Remove for fetching all the db []
-    let dbFromFB: Array<any> = r.val(); // Remove for fetching all the db []
+    let dbFromFB: Array<any> = await inventorySchema.collection
+      .find({})
+      .toArray(); // Remove for fetching all the db []
+    //inventorySchema.collection.insertMany(dbFromFB);
 
     if (!dbFromFB || !dbFromFB.length) {
-      dbFromFB = await this.commands.scrapInventories();
-      dbFB.ref("totalProducts").set(dbFromFB);
+      dbFromFB = await this.commands.scrapInventories(
+        new TiendaGamerMedellin(),
+        new SpeedLogic(),
+        new Tauret(),
+        new ImagenWorld(),
+        new GamerColombia(),
+        new ClonesYPerifericos()
+      );
+      await inventorySchema.collection.deleteMany({});
+      inventorySchema.collection.insertMany(dbFromFB);
     }
     dbFromFB = dbFromFB.filter(
       (item: ItemProduct) => !!item.name && !!item.value
@@ -59,17 +71,29 @@ export class IndexPuppeteer {
     //dbFromFB = await this.commands.getImages(dbFromFB);
     //dbFB.ref("totalProducts").update(dbFromFB);
     filtered = this.commands.filterByName(dbFromFB, itemToSearch);
-    /*filtered = dbFromFB.map((item: ItemProduct) => ({
+    inventorySchema.bulkWrite(
+      filtered.map((product: ItemProduct) => ({
+        updateOne: {
+          filter: {
+            _id: product._id,
+          },
+          update: {
+            $set: product,
+          },
+          upsert: true,
+        },
+      }))
+    );
+    /* filtered = dbFromFB.map((item: ItemProduct) => ({
       ...item,
       category:
         Number(item.value) > 0 && item.name
           ? this.commands.getCategoryByName(item.name)
           : "",
     }));*/
-    //dbFB.ref("totalProducts").update(filtered);
     const response: ResponseSearch = {
-      response: filtered,
-      sponsors: this.commands.calculateSponsors(filtered),
+      response: dbFromFB,
+      sponsors: this.commands.calculateSponsors(dbFromFB),
       status: !filtered.length ? 404 : 200,
     };
     return response;
@@ -85,8 +109,9 @@ export class IndexPuppeteer {
   }
 
   async getProductByCategory(category: string) {
-    const r = await dbFB.ref("totalProducts").once("value");
-    let dbFromFB: Array<any> = r.val();
+    let dbFromFB: Array<any> = await inventorySchema.collection
+      .find({})
+      .toArray();
     dbFromFB = dbFromFB.filter(
       (item: ItemProduct) => !!item.name && !!item.value
     );

@@ -5,6 +5,7 @@ export interface ItemProduct {
   category?: string;
   image?: string;
   urlRefer?: string;
+  _id: string;
 }
 
 export interface Seller {

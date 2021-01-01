@@ -7,6 +7,7 @@ import { ICommand } from "../interfaces/Command";
 import { ItemProduct, Seller } from "../interfaces/ItemProduct";
 import { PuppeteerService } from "../common/puppeteer";
 import { CATEGORIES } from "../common/const";
+import { IProducts } from "../interfaces/Products";
 
 export class Invoker implements ICommand {
   async getImages(arr: Array<ItemProduct>): Promise<Array<ItemProduct>> {
@@ -22,22 +23,15 @@ export class Invoker implements ICommand {
     return arr;
   }
 
-  async scrapInventories(): Promise<Array<ItemProduct>> {
-    const speed = await new SpeedLogic().getTable();
-
-    const imagen = await new ImagenWorld().getTable();
-
-    const tauret = await new Tauret().getTable();
-
-    const cyp = await new ClonesYPerifericos().getTable();
-
-    const gamerColombia = await new GamerColombia().getTable();
-
-    return speed
-      .concat(gamerColombia)
-      .concat(imagen)
-      .concat(tauret)
-      .concat(cyp);
+  async scrapInventories(
+    ...storesToScrap: Array<IProducts>
+  ): Promise<Array<ItemProduct>> {
+    let stores = await Promise.all(
+      storesToScrap.map((store: IProducts) => store.getTable())
+    );
+    stores = [].concat.apply([], stores);
+    console.log(stores);
+    return stores;
   }
 
   calculateSponsors(arr: Array<ItemProduct>): Array<Seller> {

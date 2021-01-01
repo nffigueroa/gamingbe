@@ -1,6 +1,7 @@
 const express = require("express");
 import * as bodyParser from "body-parser";
 import { Invoker } from "./commands/search.command";
+import { MongoConexion } from "./db/mongo";
 import { IndexPuppeteer } from "./index";
 
 let app = express();
@@ -25,23 +26,23 @@ app.all("/*", (req: any, res: any, next: any) => {
 
 app.get(`/gaming/search`, async (req: any, res: any, next: any) => {
   const { name } = req.query;
-  const index = new IndexPuppeteer(new Invoker());
+  const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
   const response = await index.calculate(name);
   res.send({ response });
 });
 app.get(`/gaming/search/initial`, async (req: any, res: any, next: any) => {
-  const index = new IndexPuppeteer(new Invoker());
+  const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
   const response = await index.getInitialResults();
   res.send({ response });
 });
 app.get(`/gaming/category/list`, (req: any, res: any, next: any) => {
-  const index = new IndexPuppeteer(new Invoker());
+  const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
   const response = index.getCategories();
   res.send({ response });
 });
 app.get(`/gaming/search/category`, async (req: any, res: any, next: any) => {
   const { categoryName } = req.query;
-  const index = new IndexPuppeteer(new Invoker());
+  const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
   const response = await index.getProductByCategory(categoryName);
   res.send({ ...response });
 });
