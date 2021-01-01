@@ -93,7 +93,7 @@ export class IndexPuppeteer {
           : "",
     }));*/
     const response: ResponseSearch = {
-      response: dbFromFB,
+      response: filtered,
       sponsors: this.commands.calculateSponsors(dbFromFB),
       status: !filtered.length ? 404 : 200,
     };
