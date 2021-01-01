@@ -24,26 +24,6 @@ app.all("*", (req: any, res: any, next: any) => {
   next();
 });
 
-const allowCrossDomain = function (req: any, res: any, next: any) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, Content-Length, X-Requested-With"
-  );
-  if (req.headers.origin) {
-    res.header("Access-Control-Allow-Origin", req.headers.origin);
-  }
-
-  // intercept OPTIONS method
-  if ("OPTIONS" == req.method) {
-    res.send(200);
-  } else {
-    next();
-  }
-};
-app.use(allowCrossDomain);
-
 app.get(`/gaming/search`, async (req: any, res: any, next: any) => {
   const { name } = req.query;
   const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
