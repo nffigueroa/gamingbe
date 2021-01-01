@@ -31,6 +31,9 @@ const allowCrossDomain = function (req: any, res: any, next: any) {
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization, Content-Length, X-Requested-With"
   );
+  if (req.headers.origin) {
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
+  }
 
   // intercept OPTIONS method
   if ("OPTIONS" == req.method) {
