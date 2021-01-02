@@ -51,6 +51,7 @@ export class ImagenWorld implements IProducts {
             name,
             value,
             seller: { name: "Imagen World", key: companyName },
+            url: this.URL,
           });
         }
 
@@ -59,7 +60,7 @@ export class ImagenWorld implements IProducts {
       tableTarget,
       this.companyName
     );
-
+    console.log(`${this.companyName} Success`);
     await this.browser.close();
     return data;
   }

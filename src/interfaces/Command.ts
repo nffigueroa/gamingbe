@@ -10,4 +10,5 @@ export interface ICommand {
     itemToSearch: string
   ): Array<ItemProduct>;
   getCategoryByName(name: string): string;
+  deleteDuplicated(arr: Array<ItemProduct>): Array<ItemProduct>;
 }

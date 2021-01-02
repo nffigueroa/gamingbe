@@ -34,7 +34,7 @@ export class IndexPuppeteer {
       console.log(positionRandom);
       filtered.push(dbFromFB[positionRandom]);
     });
-    filtered = await this.commands.getImages(filtered);
+    //filtered = await this.commands.getImages(filtered);
 
     const response: ResponseSearch = {
       response: filtered,
@@ -52,8 +52,12 @@ export class IndexPuppeteer {
     let dbFromFB: Array<any> = await inventorySchema.collection
       .find({})
       .toArray(); // Remove for fetching all the db []
+    /*await inventorySchema.collection
+      .find({})
+      .toArray();*/
     //inventorySchema.collection.insertMany(dbFromFB);
-
+    //dbFromFB = this.commands.deleteDuplicated(dbFromFB);
+    //await inventorySchema.collection.deleteMany({});
     if (!dbFromFB || !dbFromFB.length) {
       dbFromFB = await this.commands.scrapInventories(
         new TiendaGamerMedellin(),
@@ -63,20 +67,29 @@ export class IndexPuppeteer {
         new GamerColombia(),
         new ClonesYPerifericos()
       );
-      await inventorySchema.collection.deleteMany({});
+
+      dbFromFB = dbFromFB.filter(
+        (item: ItemProduct) =>
+          !!item.name && !!item.value && !isNaN(Number(item.value))
+      );
       inventorySchema.collection.insertMany(dbFromFB);
     }
-    dbFromFB = dbFromFB.filter(
-      (item: ItemProduct) => !!item.name && !!item.value
-    );
+
     //dbFromFB = await this.commands.getImages(dbFromFB);
-    //dbFB.ref("totalProducts").update(dbFromFB);
-    filtered = this.commands.filterByName(dbFromFB, itemToSearch);
+    //filtered = this.commands.filterByName(dbFromFB, itemToSearch);
+
+    filtered = dbFromFB.map((item: ItemProduct) => ({
+      ...item,
+      category:
+        Number(item.value) > 0 && item.name
+          ? this.commands.getCategoryByName(item.name)
+          : "",
+    }));
     inventorySchema.bulkWrite(
       filtered.map((product: ItemProduct) => ({
         updateOne: {
           filter: {
-            _id: product._id,
+            name: product.name,
           },
           update: {
             $set: product,
@@ -85,17 +98,10 @@ export class IndexPuppeteer {
         },
       }))
     );
-    /* filtered = dbFromFB.map((item: ItemProduct) => ({
-      ...item,
-      category:
-        Number(item.value) > 0 && item.name
-          ? this.commands.getCategoryByName(item.name)
-          : "",
-    }));*/
     const response: ResponseSearch = {
-      response: filtered,
+      response: dbFromFB,
       sponsors: this.commands.calculateSponsors(dbFromFB),
-      status: !filtered.length ? 404 : 200,
+      status: !dbFromFB.length ? 404 : 200,
     };
     return response;
   }

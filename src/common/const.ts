@@ -11,6 +11,7 @@ export const CATEGORIES = [
       "ASROCK",
       "RTX",
       "GTX",
+      "RADEON",
     ],
   },
   {
@@ -20,6 +21,9 @@ export const CATEGORIES = [
   {
     categoryName: "Perfiféricos",
     keys: [
+      "ELGATO",
+      "SIMULADOR",
+      "ASTRO A10 WHITE - MULTIPLAY",
       "INALAMBRICA",
       "REDRAGON",
       "Diadema",
@@ -137,6 +141,11 @@ export const CATEGORIES = [
   {
     categoryName: "Cajas",
     keys: [
+      "V150",
+      "VERSA T35",
+      "CORE P3 RED",
+      "GAMEMAX",
+      "ROCKSTAR 2 / ARGB",
       "TOWER",
       "ATX",
       "Caja",
@@ -158,6 +167,11 @@ export const CATEGORIES = [
   {
     categoryName: "Refrigeración",
     keys: [
+      "VENTIL",
+      "H350",
+      "S300",
+      "S100",
+      "H200 BLACK RGB",
       "240DDC",
       "AIRFLOW",
       "FAN",
@@ -171,6 +185,8 @@ export const CATEGORIES = [
       "REFRIGERANTE",
       "PASTA",
       "DISCIPADOR",
+      "CYLON",
+      "STREAK RGB",
     ],
   },
   {
@@ -190,6 +206,7 @@ export const CATEGORIES = [
   {
     categoryName: "Memorias",
     keys: [
+      "FURY RGB - HYPERX",
       "CRYSTAL",
       "3200",
       "RAM",
@@ -209,6 +226,8 @@ export const CATEGORIES = [
   {
     categoryName: "MotherBoard",
     keys: [
+      "TRX40",
+      "GIGABYTE/B365M",
       "Board",
       "madre",
       "B460",
@@ -226,6 +245,7 @@ export const CATEGORIES = [
   {
     categoryName: "Licencias",
     keys: [
+      "ANTIVIRUS",
       "Licencia",
       "ESET",
       "KARSPESKY",
@@ -240,14 +260,24 @@ export const CATEGORIES = [
   },
   {
     categoryName: "Computadores",
-    keys: ["Portatil", "PC", "Laptop", "Portátil", "GF75", "HP PRO"],
+    keys: [
+      "Portatil",
+      "Laptop",
+      "Portátil",
+      "GF75",
+      "HP PRO",
+      "PC DISEÑADOR",
+      "PC GAMER",
+      "PC ELECTRON",
+      "PC BATTLE",
+    ],
   },
   {
     categoryName: "Fuentes",
     keys: ["FUENTE", "CV650", "CV450", "CV550W", "GENERICA 750W", "REAL 550W"],
   },
   {
-    categoryName: "DISCO DURO",
+    categoryName: "Disco Duro",
     keys: [
       "SSD",
       "SD",
@@ -283,5 +313,9 @@ export const CATEGORIES = [
   {
     categoryName: "Combo",
     keys: ["Combo"],
+  },
+  {
+    categoryName: "Consolas",
+    keys: ["Playstation", "xbox", "nintendo"],
   },
 ];

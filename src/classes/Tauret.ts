@@ -36,13 +36,13 @@ export class Tauret implements IProducts {
             `#areaImprimir > div > div:nth-child(${i + 1}) > div.product_prod`
           );
           for (let j = 0; j < grid.length; j++) {
-            const name = rows[i]
+            const { innertText: name, href: url } = rows[i]
               .querySelectorAll(
                 `#areaImprimir > div > div:nth-child(${
                   i + 1
                 }) > div.product_prod`
               )
-              [j].getElementsByTagName("a")[0].innerText;
+              [j].getElementsByTagName("a")[0];
             const value = Number(
               rows[i]
                 .querySelectorAll(
@@ -58,6 +58,7 @@ export class Tauret implements IProducts {
               name,
               value,
               seller: { name: "Tauret Computadores", key: company },
+              url,
             });
           }
         }
@@ -66,6 +67,7 @@ export class Tauret implements IProducts {
       tableTarget,
       this.COMPANY_NAME
     );
+    console.log(`${this.COMPANY_NAME} Success`);
     await browser.close();
     return data;
   }

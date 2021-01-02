@@ -67,7 +67,7 @@ export class ClonesYPerifericos implements IProducts {
       tableTarget,
       this.COMPANY_NAME
     );
-
+    console.log(`${this.COMPANY_NAME} Success`);
     await browser.close();
     return data;
   }

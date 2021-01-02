@@ -63,12 +63,23 @@ export class Invoker implements ICommand {
           name.trim().toUpperCase().includes(key.toUpperCase())
         ).length
     )[0].categoryName;
-    console.log(r);
     return CATEGORIES.filter(
       ({ keys }) =>
         !!keys.filter((key: string) =>
           name.trim().toUpperCase().includes(key.toUpperCase())
         ).length
     )[0].categoryName;
+  }
+
+  deleteDuplicated(items: Array<ItemProduct>) {
+    const seen = new Set();
+    console.log(items.length, "Inicial");
+    items = items.filter((item: ItemProduct) => {
+      const duplicate = seen.has(item.name);
+      seen.add(item.name);
+      return !duplicate;
+    });
+    console.log(items.length, "Final");
+    return items;
   }
 }

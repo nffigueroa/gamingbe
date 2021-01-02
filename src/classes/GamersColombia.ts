@@ -39,6 +39,9 @@ export class GamerColombia implements IProducts {
       seller: { name: string; key: any };
     }[] = [];
     for (let i = 1; i < pageCount; i++) {
+      await page.waitForSelector(
+        `#formFilterProduct > div > div.container.padding-top-1x.padding-bottom-3x > div > div.col-lg-9.order-lg-2 > nav > div > div > ul > li:nth-child(${i})`
+      );
       await page.click(
         `#formFilterProduct > div > div.container.padding-top-1x.padding-bottom-3x > div > div.col-lg-9.order-lg-2 > nav > div > div > ul > li:nth-child(${i})`
       );
@@ -77,7 +80,7 @@ export class GamerColombia implements IProducts {
       );
       fullResult = fullResult.concat(data);
     }
-
+    console.log(`${this.COMPANY_NAME} Success`);
     await browser.close();
     return fullResult;
   }

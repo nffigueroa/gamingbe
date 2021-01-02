@@ -79,16 +79,19 @@ export class TiendaGamerMedellin implements IProducts {
         tableTarget,
         this.COMPANY_NAME
       );
-      await Promise.all([
-        page.click(
-          "body > div.container.page-content.results-search > div:nth-child(2) > div > div > div.col-12.product-gallery-pager > nav > ul > li.next.jump.page-item > a"
-        ),
-        page.waitForNavigation({ waitUntil: "networkidle2" }),
-      ]);
-      //await page.screenshot({ path: "screenshot.png", fullPage: true });
+      if (j !== totalPages - 1) {
+        await Promise.all([
+          page.click(
+            "body > div.container.page-content.results-search > div:nth-child(2) > div > div > div.col-12.product-gallery-pager > nav > ul > li.next.jump.page-item > a"
+          ),
+          page.waitForNavigation({ waitUntil: "networkidle2" }),
+        ]);
+      }
+
+      await page.screenshot({ path: "gamermedellin.png", fullPage: true });
       fullResult = fullResult.concat(data);
     }
-
+    console.log(`${this.COMPANY_NAME} Success`);
     await browser.close();
     return fullResult;
   }
