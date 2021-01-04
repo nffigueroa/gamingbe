@@ -28,7 +28,7 @@ export class ImagenWorld implements IProducts {
     await this.page.setViewport({ width: 1366, height: 768 });
     await this.page.goto(url);
     const data = await this.page.evaluate(
-      (table: string, companyName: string) => {
+      (table: string, companyName: string, urlCompany: string) => {
         const rows: any = document
           .querySelector(table)
           ?.querySelectorAll('[role="row"]');
@@ -46,19 +46,21 @@ export class ImagenWorld implements IProducts {
               .querySelectorAll("td")[2]
               .innerText.replace("$", "")
               .replace(/,/g, "")
+              .replace(/\./g, "")
           );
           result.push({
             name,
             value,
             seller: { name: "Imagen World", key: companyName },
-            url: this.URL,
+            url: "https://www.imagenworld.com/xapps/listaprecios/3/a",
           });
         }
 
         return result;
       },
       tableTarget,
-      this.companyName
+      this.companyName,
+      url
     );
     console.log(`${this.companyName} Success`);
     await this.browser.close();

@@ -72,20 +72,19 @@ export class IndexPuppeteer {
         (item: ItemProduct) =>
           !!item.name && !!item.value && !isNaN(Number(item.value))
       );
-      inventorySchema.collection.insertMany(dbFromFB);
+      //inventorySchema.collection.insertMany(dbFromFB);
     }
-
     //dbFromFB = await this.commands.getImages(dbFromFB);
-    //filtered = this.commands.filterByName(dbFromFB, itemToSearch);
+    filtered = this.commands.filterByName(dbFromFB, itemToSearch);
 
-    filtered = dbFromFB.map((item: ItemProduct) => ({
+    /* filtered = dbFromFB.map((item: ItemProduct) => ({
       ...item,
       category:
         Number(item.value) > 0 && item.name
           ? this.commands.getCategoryByName(item.name)
           : "",
-    }));
-    inventorySchema.bulkWrite(
+    }));*/
+    /*await inventorySchema.bulkWrite(
       filtered.map((product: ItemProduct) => ({
         updateOne: {
           filter: {
@@ -97,42 +96,37 @@ export class IndexPuppeteer {
           upsert: true,
         },
       }))
-    );
+    ); */
     const response: ResponseSearch = {
-      response: dbFromFB,
-      sponsors: this.commands.calculateSponsors(dbFromFB),
-      status: !dbFromFB.length ? 404 : 200,
+      response: filtered,
+      sponsors: this.commands.calculateSponsors(filtered),
+      status: !filtered.length ? 404 : 200,
     };
     return response;
   }
 
-  getCategories() {
-    return {
-      data: {
-        categories: CATEGORIES.map((item: any) => item.categoryName),
-      },
-      status: !CATEGORIES.length ? 404 : 200,
-    };
+  getCategories(): Array<String> {
+    return CATEGORIES.map((item: any) => item.categoryName);
   }
 
-  async getProductByCategory(category: string) {
+  async getProductByCategory(category: string): Promise<ResponseSearch> {
     await this.mongoDb.connect();
-    let dbFromFB: Array<any> = await inventorySchema.collection
+    let dbFromFB: Array<ItemProduct> = await inventorySchema.collection
       .find({})
       .toArray();
     dbFromFB = dbFromFB.filter(
       (item: ItemProduct) => !!item.name && !!item.value
     );
-    const data = dbFromFB.filter(
+    const response: Array<ItemProduct> = dbFromFB.filter(
       (item: ItemProduct) =>
         item.category?.toUpperCase() === category.toUpperCase()
     );
 
-    const sponsors = this.commands.calculateSponsors(data);
+    const sponsors = this.commands.calculateSponsors(response);
     return {
-      data,
+      response,
       sponsors,
-      status: !data.length ? 404 : 200,
+      status: !response.length ? 404 : 200,
     };
   }
 }

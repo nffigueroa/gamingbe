@@ -27,7 +27,7 @@ export class SpeedLogic implements IProducts {
     await page.setViewport({ width: 1366, height: 768 });
     await page.goto(url);
     const data = await page.evaluate(
-      (table: string, company) => {
+      (table: string, company, urlCompany) => {
         let result: Array<any> = [];
         const rows: any = document
           .querySelector("body")
@@ -49,6 +49,7 @@ export class SpeedLogic implements IProducts {
               name: "SpeedLogic",
               key: company,
             },
+            url: "https://partes.speedlogic.com.co/",
           });
           const nameB = item.querySelectorAll("td")[3].innerText;
           const valueB = item
@@ -62,14 +63,15 @@ export class SpeedLogic implements IProducts {
               name: "SpeedLogic",
               key: company,
             },
-            url: this.URL,
+            url: "https://partes.speedlogic.com.co/",
           });
         });
 
         return result;
       },
       tableTarget,
-      this.COMPANY_NAME
+      this.COMPANY_NAME,
+      url
     );
     console.log(`${this.COMPANY_NAME} Success`);
     await browser.close();

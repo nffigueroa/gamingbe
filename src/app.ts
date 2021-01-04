@@ -3,6 +3,8 @@ import * as bodyParser from "body-parser";
 import { Invoker } from "./commands/search.command";
 import { MongoConexion } from "./db/mongo";
 import { IndexPuppeteer } from "./index";
+const { graphqlHTTP } = require("express-graphql");
+import schema from "./graphql/schema";
 
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,6 +25,14 @@ app.all("*", (req: any, res: any, next: any) => {
   }
   next();
 });
+
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: schema,
+    graphiql: true,
+  })
+);
 
 app.get(`/gaming/search`, async (req: any, res: any, next: any) => {
   const { name } = req.query;

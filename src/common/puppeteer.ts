@@ -1,6 +1,7 @@
 import puppeteer from "puppeteer";
 
 export class PuppeteerService {
+  private attempts = 0;
   constructor() {}
 
   async getImage(name: string): Promise<string> {
@@ -24,7 +25,7 @@ export class PuppeteerService {
       await page.waitForSelector(
         "#islrg > div.islrc > div:nth-child(1) > a.wXeWr.islib.nfEiy.mM5pbd > div.bRMDJf.islir > img"
       );
-      const data = await page.evaluate((firstImg: string) => {
+      let data = await page.evaluate((firstImg: string) => {
         const imgBase: any = (<HTMLImageElement>(
           document.querySelector(
             "#islrg > div.islrc > div:nth-child(1) > a.wXeWr.islib.nfEiy.mM5pbd > div.bRMDJf.islir > img"
@@ -32,7 +33,14 @@ export class PuppeteerService {
         ))?.src;
         return imgBase;
       }, firstImage);
-
+      if (
+        (data.length < 200 && this.attempts < 4) ||
+        (this.attempts < 4 && data.includes("/////"))
+      ) {
+        this.attempts++;
+        console.log(name, "Image Failed");
+        data = this.getImage(name);
+      }
       await browser.close();
       return data;
     } catch (error) {
