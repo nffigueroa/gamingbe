@@ -84,19 +84,6 @@ export class IndexPuppeteer {
           ? this.commands.getCategoryByName(item.name)
           : "",
     }));*/
-    /*await inventorySchema.bulkWrite(
-      filtered.map((product: ItemProduct) => ({
-        updateOne: {
-          filter: {
-            name: product.name,
-          },
-          update: {
-            $set: product,
-          },
-          upsert: true,
-        },
-      }))
-    ); */
     const response: ResponseSearch = {
       response: filtered,
       sponsors: this.commands.calculateSponsors(filtered),
@@ -107,6 +94,62 @@ export class IndexPuppeteer {
 
   getCategories(): Array<String> {
     return CATEGORIES.map((item: any) => item.categoryName);
+  }
+
+  async bulkNewDataAndUpdate(): Promise<any> {
+    await this.mongoDb.connect();
+    const stores = [
+      new TiendaGamerMedellin(),
+      new SpeedLogic(),
+      new Tauret(),
+      new ImagenWorld(),
+      new GamerColombia(),
+      new ClonesYPerifericos(),
+    ];
+    try {
+      let dbFromFB = Array<ItemProduct>();
+      let index = 0;
+      let errors = 0;
+      const getInventories = async () => {
+        if (index >= stores.length) {
+          errors = 0;
+          return;
+        }
+        try {
+          console.log("Attemtping ", index);
+
+          dbFromFB = await this.commands.scrapInventories(stores[index]);
+          dbFromFB = dbFromFB.filter(
+            (item: ItemProduct) =>
+              !!item.name && !!item.value && !isNaN(Number(item.value))
+          );
+          await inventorySchema.bulkWrite(
+            dbFromFB.map((product: ItemProduct) => ({
+              updateOne: {
+                filter: {
+                  name: product.name,
+                },
+                update: {
+                  $set: product,
+                },
+                upsert: true,
+              },
+            }))
+          );
+          console.log(index, " Updated");
+          index++;
+          await getInventories();
+        } catch (error) {
+          errors++;
+          console.log(error);
+          await getInventories();
+        }
+      };
+      await getInventories();
+    } catch (error) {
+      console.log(error);
+    }
+    return { response: "All up to date" };
   }
 
   async getProductByCategory(category: string): Promise<ResponseSearch> {

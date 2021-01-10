@@ -25,6 +25,9 @@ export const resolvers = {
     },
     async searchByProduct(root: any, arg: any) {
       const { name } = arg;
+      if (!name) {
+        return new Array<ResponseSearch>();
+      }
       const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
       const response = await index.calculate(name);
       return response;

@@ -30,7 +30,6 @@ export class Invoker implements ICommand {
       storesToScrap.map((store: IProducts) => store.getTable())
     );
     stores = [].concat.apply([], stores);
-    console.log(stores);
     return stores;
   }
 

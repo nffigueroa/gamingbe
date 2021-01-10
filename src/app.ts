@@ -56,6 +56,12 @@ app.get(`/gaming/search/category`, async (req: any, res: any, next: any) => {
   const response = await index.getProductByCategory(categoryName);
   res.send({ ...response });
 });
+app.get(`/gaming/update/database`, async (req: any, res: any, next: any) => {
+  const { categoryName } = req.query;
+  const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
+  const response = await index.bulkNewDataAndUpdate();
+  res.send({ ...response });
+});
 
 const http = require("http").createServer(app);
 const PORT = process.env.PORT || 3001;
