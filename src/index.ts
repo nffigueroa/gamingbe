@@ -20,32 +20,19 @@ export class IndexPuppeteer {
   async getInitialResults(): Promise<ResponseSearch> {
     try {
       await this.mongoDb.connect();
-      let filtered: ItemProduct[] = [];
-      let dbFromFB: Array<any> = await inventorySchema.collection
-        .find({})
-        .toArray();
+      let dbFromFB: Array<any> = await inventorySchema.aggregate([
+        { $sample: { size: 10 } },
+      ]);
       dbFromFB = dbFromFB.filter(
         (item: ItemProduct) => !!item.name && !!item.value
       );
-      const maxRandom = Array(20).fill(1);
-      maxRandom.forEach(() => {
-        const positionRandom = Math.round(
-          Math.random() * (dbFromFB.length - 1) + 1
-        );
-        console.log(positionRandom);
-        filtered.push(dbFromFB[positionRandom]);
-      });
-      //filtered = await this.commands.getImages(filtered);
-
       const response: ResponseSearch = {
-        response: filtered,
-        sponsors: this.commands.calculateSponsors(filtered),
-        status: !filtered.length ? 404 : 200,
+        response: dbFromFB,
+        sponsors: this.commands.calculateSponsors(dbFromFB),
+        status: !dbFromFB.length ? 404 : 200,
       };
       return response;
     } catch (error) {
-      console.log(error);
-
       return {
         response: [],
         sponsors: [],
@@ -54,23 +41,19 @@ export class IndexPuppeteer {
     }
   }
 
-  async calculate(itemToSearch: string): Promise<ResponseSearch> {
+  async searchByName(itemToSearch: string): Promise<ResponseSearch> {
     try {
       await this.mongoDb.connect();
-      let filtered = [];
-      //let dbFromFB: Array<any> = []; // Remove for fetching all the db []
-      let dbFromFB: Array<any> = await inventorySchema.collection
-        .find({})
-        .toArray(); // Remove for fetching all the db []
-
-      //dbFromFB = this.commands.deleteDuplicated(dbFromFB);
-      //await inventorySchema.collection.deleteMany({});
-      filtered = this.commands.filterByName(dbFromFB, itemToSearch);
-
+      let dbFromFB: Array<any> = await inventorySchema.find({
+        name: {
+          $regex: itemToSearch,
+          $options: "i",
+        },
+      });
       const response: ResponseSearch = {
-        response: filtered,
-        sponsors: this.commands.calculateSponsors(filtered),
-        status: !filtered.length ? 404 : 200,
+        response: dbFromFB,
+        sponsors: this.commands.calculateSponsors(dbFromFB),
+        status: !dbFromFB.length ? 404 : 200,
       };
       return response;
     } catch (error) {
@@ -200,11 +183,13 @@ export class IndexPuppeteer {
   async getProductByCategory(category: string): Promise<ResponseSearch> {
     await this.mongoDb.connect();
     let dbFromFB: Array<ItemProduct> = await inventorySchema.collection
-      .find({})
+      .find({
+        category: {
+          $regex: category,
+          $options: "i",
+        },
+      })
       .toArray();
-    dbFromFB = dbFromFB.filter(
-      (item: ItemProduct) => !!item.name && !!item.value
-    );
     const response: Array<ItemProduct> = dbFromFB.filter(
       (item: ItemProduct) =>
         item.category?.toUpperCase() === category.toUpperCase()

@@ -29,7 +29,7 @@ export const resolvers = {
         return new Array<ResponseSearch>();
       }
       const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
-      const response = await index.calculate(name);
+      const response = await index.searchByName(name);
       return response;
     },
   },

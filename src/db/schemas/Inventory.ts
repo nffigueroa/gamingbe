@@ -9,4 +9,4 @@ const schema = new Schema({
   url: String,
 });
 
-export const inventorySchema = mongoose.model("Inventory", schema);
+export const inventorySchema = mongoose.model("inventory", schema);

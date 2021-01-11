@@ -37,7 +37,7 @@ app.use(
 app.get(`/gaming/search`, async (req: any, res: any, next: any) => {
   const { name } = req.query;
   const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
-  const response = await index.calculate(name);
+  const response = await index.searchByName(name);
   res.send({ response });
 });
 app.get(`/gaming/search/initial`, async (req: any, res: any, next: any) => {
