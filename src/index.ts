@@ -18,82 +18,124 @@ export class IndexPuppeteer {
   constructor(private commands: ICommand, private mongoDb: IMongoDB) {}
 
   async getInitialResults(): Promise<ResponseSearch> {
-    await this.mongoDb.connect();
-    let filtered: ItemProduct[] = [];
-    let dbFromFB: Array<any> = await inventorySchema.collection
-      .find({})
-      .toArray();
-    dbFromFB = dbFromFB.filter(
-      (item: ItemProduct) => !!item.name && !!item.value
-    );
-    const maxRandom = Array(20).fill(1);
-    maxRandom.forEach(() => {
-      const positionRandom = Math.round(
-        Math.random() * (dbFromFB.length - 1) + 1
+    try {
+      await this.mongoDb.connect();
+      let filtered: ItemProduct[] = [];
+      let dbFromFB: Array<any> = await inventorySchema.collection
+        .find({})
+        .toArray();
+      dbFromFB = dbFromFB.filter(
+        (item: ItemProduct) => !!item.name && !!item.value
       );
-      console.log(positionRandom);
-      filtered.push(dbFromFB[positionRandom]);
-    });
-    //filtered = await this.commands.getImages(filtered);
+      const maxRandom = Array(20).fill(1);
+      maxRandom.forEach(() => {
+        const positionRandom = Math.round(
+          Math.random() * (dbFromFB.length - 1) + 1
+        );
+        console.log(positionRandom);
+        filtered.push(dbFromFB[positionRandom]);
+      });
+      //filtered = await this.commands.getImages(filtered);
 
-    const response: ResponseSearch = {
-      response: filtered,
-      sponsors: this.commands.calculateSponsors(filtered),
-      status: !filtered.length ? 404 : 200,
-    };
-    return response;
+      const response: ResponseSearch = {
+        response: filtered,
+        sponsors: this.commands.calculateSponsors(filtered),
+        status: !filtered.length ? 404 : 200,
+      };
+      return response;
+    } catch (error) {
+      console.log(error);
+
+      return {
+        response: [],
+        sponsors: [],
+        status: 500,
+      };
+    }
   }
 
   async calculate(itemToSearch: string): Promise<ResponseSearch> {
+    try {
+      await this.mongoDb.connect();
+      let filtered = [];
+      //let dbFromFB: Array<any> = []; // Remove for fetching all the db []
+      let dbFromFB: Array<any> = await inventorySchema.collection
+        .find({})
+        .toArray(); // Remove for fetching all the db []
+
+      //dbFromFB = this.commands.deleteDuplicated(dbFromFB);
+      //await inventorySchema.collection.deleteMany({});
+      filtered = this.commands.filterByName(dbFromFB, itemToSearch);
+
+      const response: ResponseSearch = {
+        response: filtered,
+        sponsors: this.commands.calculateSponsors(filtered),
+        status: !filtered.length ? 404 : 200,
+      };
+      return response;
+    } catch (error) {
+      console.log(error);
+
+      return {
+        response: [],
+        sponsors: [],
+        status: 500,
+      };
+    }
+  }
+
+  getCategories(): Array<String> {
+    return CATEGORIES.map((item: any) => item.categoryName);
+  }
+
+  async setImages() {
     await this.mongoDb.connect();
-    let filtered = [];
-    //const r = await dbFB.ref("totalProducts").once("value");
-    //let dbFromFB: Array<any> = []; // Remove for fetching all the db []
     let dbFromFB: Array<any> = await inventorySchema.collection
       .find({})
-      .toArray(); // Remove for fetching all the db []
-    /*await inventorySchema.collection
+      .toArray();
+    dbFromFB = await this.commands.getImages(dbFromFB);
+    await inventorySchema.bulkWrite(
+      dbFromFB.map((product: ItemProduct) => ({
+        updateOne: {
+          filter: {
+            _id: product._id,
+          },
+          update: {
+            $set: product,
+          },
+          upsert: true,
+        },
+      }))
+    );
+    return { response: "All Images configured" };
+  }
+
+  async categorize() {
+    await this.mongoDb.connect();
+    let dbFromFB: Array<any> = await inventorySchema.collection
       .find({})
-      .toArray();*/
-    //inventorySchema.collection.insertMany(dbFromFB);
-    //dbFromFB = this.commands.deleteDuplicated(dbFromFB);
-    //await inventorySchema.collection.deleteMany({});
-    if (!dbFromFB || !dbFromFB.length) {
-      dbFromFB = await this.commands.scrapInventories(
-        new TiendaGamerMedellin(),
-        new SpeedLogic(),
-        new Tauret(),
-        new ImagenWorld(),
-        new GamerColombia(),
-        new ClonesYPerifericos()
-      );
-
-      dbFromFB = dbFromFB.filter(
-        (item: ItemProduct) =>
-          !!item.name && !!item.value && !isNaN(Number(item.value))
-      );
-      //inventorySchema.collection.insertMany(dbFromFB);
-    }
-    //dbFromFB = await this.commands.getImages(dbFromFB);
-    filtered = this.commands.filterByName(dbFromFB, itemToSearch);
-
-    /* filtered = dbFromFB.map((item: ItemProduct) => ({
+      .toArray();
+    dbFromFB = dbFromFB.map((item: ItemProduct) => ({
       ...item,
       category:
         Number(item.value) > 0 && item.name
           ? this.commands.getCategoryByName(item.name)
           : "",
-    }));*/
-    const response: ResponseSearch = {
-      response: filtered,
-      sponsors: this.commands.calculateSponsors(filtered),
-      status: !filtered.length ? 404 : 200,
-    };
-    return response;
-  }
-
-  getCategories(): Array<String> {
-    return CATEGORIES.map((item: any) => item.categoryName);
+    }));
+    await inventorySchema.bulkWrite(
+      dbFromFB.map((product: ItemProduct) => ({
+        updateOne: {
+          filter: {
+            _id: product._id,
+          },
+          update: {
+            $set: product,
+          },
+          upsert: true,
+        },
+      }))
+    );
+    return { response: "All categories configured" };
   }
 
   async bulkNewDataAndUpdate(): Promise<any> {
@@ -114,6 +156,10 @@ export class IndexPuppeteer {
         if (index >= stores.length) {
           errors = 0;
           return;
+        }
+        if (errors > 3) {
+          errors = 0;
+          await getInventories();
         }
         try {
           console.log("Attemtping ", index);
@@ -136,7 +182,6 @@ export class IndexPuppeteer {
               },
             }))
           );
-          console.log(index, " Updated");
           index++;
           await getInventories();
         } catch (error) {

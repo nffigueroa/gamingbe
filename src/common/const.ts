@@ -118,6 +118,7 @@ export const CATEGORIES = [
       "Razer",
       "CUADRO",
       "Panel",
+      "MONTURA",
     ],
   },
   {

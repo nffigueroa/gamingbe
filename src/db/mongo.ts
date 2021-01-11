@@ -12,7 +12,7 @@ export class MongoConexion implements IMongoDB {
 
   async connect() {
     return await mongoose.connect(
-      "mongodb+srv://gamershop:gamershopsas@cluster0.6dy3t.mongodb.net/test",
+      "mongodb+srv://gamershop:gamershopsas@cluster0.6dy3t.mongodb.net/inventoriesProd?retryWrites=true&w=majority",
       { useNewUrlParser: true, useUnifiedTopology: true }
     );
   }

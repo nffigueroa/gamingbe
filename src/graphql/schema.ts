@@ -13,7 +13,7 @@ const typeDefs = gql`
     seller: Seller
     category: String
     image: String
-    urlRefer: String
+    url: String
     _id: String
   }
   type ResponseSearch {

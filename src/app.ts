@@ -57,9 +57,18 @@ app.get(`/gaming/search/category`, async (req: any, res: any, next: any) => {
   res.send({ ...response });
 });
 app.get(`/gaming/update/database`, async (req: any, res: any, next: any) => {
-  const { categoryName } = req.query;
   const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
   const response = await index.bulkNewDataAndUpdate();
+  res.send({ ...response });
+});
+app.get(`/gaming/update/categories`, async (req: any, res: any, next: any) => {
+  const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
+  const response = await index.categorize();
+  res.send({ ...response });
+});
+app.get(`/gaming/update/images`, async (req: any, res: any, next: any) => {
+  const index = new IndexPuppeteer(new Invoker(), new MongoConexion());
+  const response = await index.setImages();
   res.send({ ...response });
 });
 

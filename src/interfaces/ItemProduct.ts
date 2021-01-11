@@ -4,7 +4,7 @@ export interface ItemProduct {
   seller: Seller;
   category?: string;
   image?: string;
-  urlRefer?: string;
+  url?: string;
   _id: string;
 }
 

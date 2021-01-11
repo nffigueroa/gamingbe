@@ -6,7 +6,7 @@ const schema = new Schema({
   seller: Object,
   category: String,
   image: String,
-  urlRefer: String,
+  url: String,
 });
 
 export const inventorySchema = mongoose.model("Inventory", schema);

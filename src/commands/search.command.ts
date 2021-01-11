@@ -13,7 +13,11 @@ export class Invoker implements ICommand {
   async getImages(arr: Array<ItemProduct>): Promise<Array<ItemProduct>> {
     const pup = new PuppeteerService();
     for (let i = 0; i < arr.length; i++) {
-      if (!arr[i].name || arr[i].image || !arr[i].image?.includes("////")) {
+      if (
+        !arr[i].name ||
+        arr[i].image ||
+        (arr[i].image && !arr[i].image?.includes("////"))
+      ) {
         console.log("Ejecucion " + i + " de " + arr.length, !!arr[i].image);
         continue;
       }
