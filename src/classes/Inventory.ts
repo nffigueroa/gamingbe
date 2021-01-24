@@ -1,20 +1,18 @@
-import { PuppeteerService } from "./common/puppeteer";
-import { ItemProduct, Seller } from "./interfaces/ItemProduct";
+import { ItemProduct, Seller } from "../interfaces/ItemProduct";
 
-import * as admin from "firebase-admin";
-import { ResponseSearch } from "./interfaces/Responses";
-import { IMongoDB } from "./interfaces/Mongo";
-import { ICommand } from "./interfaces/Command";
-import { CATEGORIES } from "./common/const";
-import { TiendaGamerMedellin } from "./classes/TiendaGamerMedellin";
-import { SpeedLogic } from "./classes/SpeedLogic";
-import { Tauret } from "./classes/Tauret";
-import { ImagenWorld } from "./classes/ImagenWorld";
-import { GamerColombia } from "./classes/GamersColombia";
-import { ClonesYPerifericos } from "./classes/ClonesYPerifericos";
-import { inventorySchema } from "./db/schemas/Inventory";
+import { ResponseSearch } from "../interfaces/Responses";
+import { IMongoDB } from "../interfaces/Mongo";
+import { ICommand } from "../interfaces/Command";
+import { CATEGORIES } from "../common/categories";
+import { TiendaGamerMedellin } from "./TiendaGamerMedellin";
+import { SpeedLogic } from "./SpeedLogic";
+import { Tauret } from "./Tauret";
+import { ImagenWorld } from "./ImagenWorld";
+import { GamerColombia } from "./GamersColombia";
+import { ClonesYPerifericos } from "./ClonesYPerifericos";
+import { inventorySchema } from "../db/schemas/Inventory";
 
-export class IndexPuppeteer {
+export class Inventory {
   constructor(private commands: ICommand, private mongoDb: IMongoDB) {}
 
   async getInitialResults(): Promise<ResponseSearch> {
@@ -33,6 +31,8 @@ export class IndexPuppeteer {
       };
       return response;
     } catch (error) {
+      console.log(error);
+
       return {
         response: [],
         sponsors: [],
@@ -201,5 +201,10 @@ export class IndexPuppeteer {
       sponsors,
       status: !response.length ? 404 : 200,
     };
+  }
+
+  async getProductById(id: string): Promise<ItemProduct> {
+    await this.mongoDb.connect();
+    return await inventorySchema.findById(id);
   }
 }

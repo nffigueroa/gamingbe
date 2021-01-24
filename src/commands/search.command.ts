@@ -1,12 +1,7 @@
-import { ClonesYPerifericos } from "../classes/ClonesYPerifericos";
-import { GamerColombia } from "../classes/GamersColombia";
-import { ImagenWorld } from "../classes/ImagenWorld";
-import { SpeedLogic } from "../classes/SpeedLogic";
-import { Tauret } from "../classes/Tauret";
 import { ICommand } from "../interfaces/Command";
 import { ItemProduct, Seller } from "../interfaces/ItemProduct";
 import { PuppeteerService } from "../common/puppeteer";
-import { CATEGORIES } from "../common/const";
+import { CATEGORIES } from "../common/categories";
 import { IProducts } from "../interfaces/Products";
 
 export class Invoker implements ICommand {
